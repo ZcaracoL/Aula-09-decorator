@@ -1,0 +1,43 @@
+from abc import ABC, abstractmethod
+
+# Componente
+class Notificador(ABC):
+    @abstractmethod
+    def enviar(self, mensagem):
+        pass
+
+
+# Componente Concreto
+class NotificadorEmail(Notificador):
+    def enviar(self, mensagem):
+        return f"Enviando por Email: {mensagem}"
+
+
+# Decorator
+class DecoradorNotificador(Notificador):
+    def __init__(self, notificador):
+        self._notificador = notificador
+
+    def enviar(self, mensagem):
+        return self._notificador.enviar(mensagem)
+
+
+# Decoradores Concretos
+class NotificadorSMS(DecoradorNotificador):
+    def enviar(self, mensagem):
+        return self._notificador.enviar(mensagem) + \
+               f"\nEnviando por SMS: {mensagem}"
+
+
+class NotificadorWhatsApp(DecoradorNotificador):
+    def enviar(self, mensagem):
+        return self._notificador.enviar(mensagem) + \
+               f"\nEnviando por WhatsApp: {mensagem}"  #aqui basicamente ele adiciona o envio por WhatsApp junto com os outros que já tinham
+
+
+# Utilização
+notificador = NotificadorEmail() #aqui ele tá pegando o email e adicionando a função de mandar SMS junto
+notificador = NotificadorSMS(notificador)  
+notificador = NotificadorWhatsApp(notificador)
+
+print(notificador.enviar("Sistema em manutenção."))  #aqui ele executa tudo e mostra na tela todas as formas de envio
