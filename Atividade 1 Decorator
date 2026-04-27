@@ -1,0 +1,84 @@
+from abc import ABC, abstractmethod
+
+# Aqui eu tô criando uma classe abstrata (tipo um modelo base)
+# Ela serve só como padrão pras outras classes seguirem
+class Pizza(ABC):
+    @abstractmethod
+    def custo(self):
+        pass  # aqui vai obrigar as classes filhas a terem esse método
+
+    @abstractmethod
+    def descricao(self):
+        pass  # mesma coisa, toda pizza precisa ter descrição
+
+
+# Essa é a pizza "simples", sem nada adicional
+class PizzaBase(Pizza):
+    def custo(self):
+        return 20.0  # custo inicial da pizza
+
+    def descricao(self):
+        return "Pizza Base"  # descrição padrão
+
+
+# Esse aqui é o decorator base
+# Ele recebe uma pizza e "envolve" ela
+class DecoradorPizza(Pizza):
+    def __init__(self, pizza):
+        self._pizza = pizza  # guardo a pizza que foi passada
+
+    def custo(self):
+        return self._pizza.custo()  # só repassa o custo
+
+    def descricao(self):
+        return self._pizza.descricao()  # repassa a descrição
+
+
+# Agora começam os adicionais (decoradores concretos)
+
+class Queijo(DecoradorPizza):
+    def custo(self):
+        # aqui eu pego o custo da pizza anterior e adiciono o valor do queijo
+        return self._pizza.custo() + 5.0
+
+    def descricao(self):
+        # adiciona "Queijo" na descrição
+        return self._pizza.descricao() + ", Queijo"
+
+
+class Calabresa(DecoradorPizza):
+    def custo(self):
+        return self._pizza.custo() + 7.0  # soma o valor da calabresa
+
+    def descricao(self):
+        return self._pizza.descricao() + ", Calabresa"
+
+
+class Bacon(DecoradorPizza):
+    def custo(self):
+        return self._pizza.custo() + 8.0  # soma o valor do bacon
+
+    def descricao(self):
+        return self._pizza.descricao() + ", Bacon"
+
+
+class BordaRecheada(DecoradorPizza):
+    def custo(self):
+        return self._pizza.custo() + 6.0  # adiciona o valor da borda
+
+    def descricao(self):
+        return self._pizza.descricao() + ", Borda Recheada"
+
+
+# Aqui eu começo criando uma pizza simples
+pizza = PizzaBase()
+
+# Aqui eu vou "envolvendo" a pizza com os adicionais
+# tipo uma camada em cima da outra (isso que é o padrão decorator)
+pizza = Queijo(pizza)
+pizza = Calabresa(pizza)
+pizza = BordaRecheada(pizza)
+
+# No final ele junta tudo
+print("Descrição:", pizza.descricao())
+print("Custo Total: R$", pizza.custo())
